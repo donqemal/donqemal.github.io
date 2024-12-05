@@ -17,19 +17,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Set up Node.js (optional, if using markdown-cli)
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
+      # Install pandoc
+      - name: Install pandoc
+        run: sudo apt-get install -y pandoc
 
-      # Install markdown-cli (or use a different tool, e.g., pandoc)
-      - name: Install markdown-cli
-        run: npm install -g markdown-cli
-
-      # Convert README.md to README.html
+      # Convert README.md to HTML
       - name: Convert README.md to HTML
-        run: markdown README.md > README.html
+        run: pandoc README.md -o README.html
 
       # Create or update index.html with the contents of README.html
       - name: Create or update index.html
