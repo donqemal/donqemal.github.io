@@ -1,50 +1,33 @@
 name: README to HTML
-
 on:
   push:
     branches:
       - main
-  pull_request:
-    paths:
-      - 'README.md'
+  workflow_dispatch:
 
 jobs:
-  convert-readme:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the repository code
-      - name: Checkout code
+      - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # Install pandoc
-      - name: Install pandoc
-        run: sudo apt-get install -y pandoc
+      - name: Convert README.md to index.html
+        uses: jaywcjlove/markdown-to-html-cli@main
+        with:
+          source: README.md
+          output: index.html
+          title: "My Project"
+          description: "Generated from README.md"
+          github-corners: https://github.com/donqemal/donqemal.github.io
+          favicon: |
+            data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌐</text></svg>
 
-      # Convert README.md to README.html
-      - name: Convert README.md to README.html
-        run: pandoc README.md -o README.html
-
-      # Create index.html and embed README.html inside it
-      - name: Create index.html
+      - name: Commit and Push Changes
         run: |
-          echo "<html><head><title>README</title></head><body>" > index.html
-          if [ -f README.html ]; then
-            cat README.html >> index.html
-          else
-            echo "<p>Error: README.html not found</p>" >> index.html
-          fi
-          echo "</body></html>" >> index.html
-
-      # Configure Git for commit and push
-      - name: Configure Git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-      # Commit and push the changes
-      - name: Commit and push changes
-        run: |
-          git add README.html index.html
-          git commit -m "Automated update: Converted README.md to index.html"
-          git push origin main
+          git config user.name "Edon Malushaj"
+          git config user.email "edon_malushaj@hotmail.com"
+          git add index.html
+          git commit -m "Update index.html from README.md"
+          git push
