@@ -1,0 +1,48 @@
+name: README to HTML
+
+on:
+  push:
+    paths:
+      - 'README.md'
+  pull_request:
+    paths:
+      - 'README.md'
+
+jobs:
+  convert-readme:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up Node.js (optional, if using markdown-cli)
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      # Install markdown-cli (or use a different tool, e.g., pandoc)
+      - name: Install markdown-cli
+        run: npm install -g markdown-cli
+
+      # Convert README.md to README.html
+      - name: Convert README.md to HTML
+        run: markdown README.md > README.html
+
+      # Create or update index.html with the contents of README.html
+      - name: Create or update index.html
+        run: |
+          echo "<html><head><title>README</title></head><body>" > index.html
+          cat README.html >> index.html
+          echo "</body></html>" >> index.html
+
+      # Optionally, upload the HTML files as artifacts
+      - name: Upload HTML files
+        uses: actions/upload-artifact@v3
+        with:
+          name: HTML-files
+          path: |
+            README.html
+            index.html
