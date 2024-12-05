@@ -36,11 +36,15 @@ jobs:
           fi
           echo "</body></html>" >> index.html
 
-      # Upload HTML files as artifacts
-      - name: Upload HTML files
-        uses: actions/upload-artifact@v3
-        with:
-          name: HTML-files
-          path: |
-            README.html
-            index.html
+      # Configure Git for commit and push
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      # Commit and push the changes
+      - name: Commit and push changes
+        run: |
+          git add README.html index.html
+          git commit -m "Automated update: Converted README.md to index.html"
+          git push origin main
