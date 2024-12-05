@@ -21,18 +21,22 @@ jobs:
       - name: Install pandoc
         run: sudo apt-get install -y pandoc
 
-      # Convert README.md to HTML
-      - name: Convert README.md to HTML
+      # Convert README.md to README.html
+      - name: Convert README.md to README.html
         run: pandoc README.md -o README.html
 
-      # Create or update index.html with the contents of README.html
-      - name: Create or update index.html
+      # Create index.html and embed README.html inside it
+      - name: Create index.html
         run: |
           echo "<html><head><title>README</title></head><body>" > index.html
-          cat README.html >> index.html
+          if [ -f README.html ]; then
+            cat README.html >> index.html
+          else
+            echo "<p>Error: README.html not found</p>" >> index.html
+          fi
           echo "</body></html>" >> index.html
 
-      # Optionally, upload the HTML files as artifacts
+      # Upload HTML files as artifacts
       - name: Upload HTML files
         uses: actions/upload-artifact@v3
         with:
